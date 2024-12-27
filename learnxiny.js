@@ -290,24 +290,183 @@ myFunction2();
 // console.log(temporary); // ReferenceError: temporary is not defined
 
 // This inner function has access to the outer function's scope even after the outer function exits.
-function sayHelloInTwoSeconds(name) {
-    var prompt = "Hello, " + name + "!";
-
-    function inner() {
-        console.log(prompt);
-    }
-    setTimeout(inner, 2000);
-    console.log("sayHelloInTwoSeconds exiting");
-}
-sayHelloInTwoSeconds("Alex");
+// function sayHelloInTwoSeconds(name) {
+//     var prompt = "Hello, " + name + "!";
+//
+//     function inner() {
+//         console.log(prompt);
+//     }
+//     setTimeout(inner, 2000);
+//     console.log("sayHelloInTwoSeconds exiting");
+// }
+// sayHelloInTwoSeconds("Alex");
 
 // ----------------------------------------- //
 // 5. More about Objects: Constructors and Prototypes
 // ----------------------------------------- //
 
+// Objects can contain functions.
+var myObj2 = {
+    key1: "Hello",
+    key2: "World",
+    myFunc: function() {
+        console.log(this.key1 + ", " + this.key2 + "!");
+    }
+}
+myObj2.myFunc();
 
+// This shows assigning the same function to `f` in another object, and how `this` works.
+var myObj3 = {
+    key1: "One",
+    key2: "Two",
+}
+myObj3.f = myObj2.myFunc;
+myObj3.f();
 
+// We can specify a context for a function to execute in when we invoke it using `call` or `apply`.
+var myObj4 = {
+    myString: "Four",
+}
+var anotherFunc = function(s) {
+    console.log(this.myString + s);
+}
+anotherFunc.call(myObj4, " and Hello Again!");
+anotherFunc.apply(myObj4, [" and Hello Again!"]);
 
+// You can use this to hack Math to accept an array
+console.log(Math.min(42, 6, 27));
+console.log(Math.min([42, 6, 27]));
+console.log(Math.min.apply(Math, [42, 6, 27]));
 
+// `call` and `apply` are only temporary. We can use `bind` for permanence.
+var boundFunc = anotherFunc.bind(myObj4);
+boundFunc(" hiya");
 
+// `bind` can also be used to partially apply a function
+var product = function(a, b) {console.log(a * b)};
+var doubler = product.bind({}, 2);
+doubler(8);
 
+// When you call a function with the `new` keyword, a new object is created and made available to the function via the `this` keyword. Functions designed to be called like this are called constructors.
+
+var MyConstructor = function() {
+    this.myNumber = 5;
+    this.mySecondNumber = 10;
+}
+var myNewObj = new MyConstructor();
+console.log(myNewObj);
+
+// Unlike most other OO languages, JS has no concept of instances created from class blueprints. Instead, JS combines instantiation and inheritance into a single concept: a prototype.
+// Every JS object has a prototype. When you go to access a property on an object that doesn't exist on the actual object, the interpreter will look at its prototype.
+// JavaScript's objects are equivalent to "dictionaries" or "maps" in other
+// languages: an unordered collection of key-value pairs.
+
+var myObj = {
+    myString: "Hello, world!"
+}
+var myPrototype = {
+    meaningOfLife: 42,
+    myFunc: function() {
+        return this.myString.toLowerCase();
+    }
+}
+console.log(myObj.__proto__);
+myObj.__proto__ = myPrototype;
+console.log(myObj.__proto__);
+console.log(myObj.meaningOfLife);
+console.log(myObj.myFunc());
+
+myPrototype.meaningOfLife = 43;
+console.log(myObj.meaningOfLife);
+
+console.log("Prototype chain");
+for (var x in myObj) {
+    if (myObj.hasOwnProperty(x)) {
+        console.log("ℹ️ This is on the object itself");
+    } else {
+        console.log("ℹ️ This isn't");
+    }
+    console.log(myObj[x]);
+}
+
+// Prototype
+
+function Person(first, last, age) {
+    this.firstName = first;
+    this.lastName = last;
+    this.age = age;
+}
+Person.prototype.nationality = "English";
+var person = new Person("Alex", "Mackechnie", 28);
+console.log(person);
+console.log(person.nationality);
+for (var x in person) {
+    if (person.hasOwnProperty(x)) {
+        console.log("ℹ️ This is on the object itself");
+    } else {
+        console.log("ℹ️ This isn't");
+    }
+    console.log(person[x]);
+}
+
+function logProto(o) {
+    console.log("----------- OBJECT -----------", + o);
+    for (var x in o) {
+        if (o.hasOwnProperty(x)) {
+            console.log("ℹ️ This is on the object itself");
+        } else {
+            console.log("ℹ️ This isn't");
+        }
+        console.log(o[x]);
+    }
+}
+
+var myObjWithProto = Object.create(myPrototype);
+logProto(myObjWithProto);
+
+// Constructors have a prototype property, but this *is not* the prototype of the constructor function itself; instead, it's the prototype that new objects are given when they're created with that constructor and the `new` keyword.
+MyConstructor.prototype = {
+    num: 6,
+    getMyNumber: function() {
+        return this.num;
+    }
+}
+var myNewObj2 = new MyConstructor();
+logProto(myNewObj2);
+console.log(myNewObj2.getMyNumber());
+myNewObj2.num = 7;
+console.log(myNewObj2.getMyNumber());
+
+// Built in types have constructors that create equivalent wrapper objects.
+var myNumber = 12;
+var myNumberObj = new Number(12);
+console.log(myNumber == myNumberObj);
+console.log(myNumber === myNumberObj);
+console.log(typeof(myNumber));
+console.log(typeof(myNumberObj));
+
+// Wrapper objects and regular builtins share a prototype, so you can add functionality to a string.
+String.prototype.firstCharacter = function() {
+    return this.charAt(0);
+}
+console.log("abc".firstCharacter());
+
+// ----------------------------------------- //
+// 6. ES6 Additions
+// ----------------------------------------- //
+
+let name = "Billy";
+name = "William";
+
+const pi = 3.14;
+// pi = 4.13; // Will not work
+
+console.log(isEven(5));
+function isEven(number) {
+    return number % 2 === 0;
+}
+
+const isEven2 = (number) => {
+    return number % 2 === 0;
+}
+console.log(isEven2(5));
