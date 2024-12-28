@@ -150,5 +150,3 @@ const zombie2 = new ZombieClass("Zori");
 console.log(zombie2);
 console.log(zombie2.eatBrain());
 
-
-
