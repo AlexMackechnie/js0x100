@@ -4,11 +4,11 @@ import { stdin as input, stdout as output } from "node:process";
 
 class Game {
     rl: readline.Interface;
-    boats: { [key: string]: Battleship};
+    ships: { [key: string]: Battleship};
 
     constructor() {
         this.rl = readline.createInterface(input, output);
-        this.boats = {}
+        this.ships = {}
     }
 
     async gameLoop(): Promise<void> {
@@ -19,16 +19,21 @@ class Game {
 
             switch(answer) {
                 case "c":
-                    const boatType = await this.rl.question("⚓️ LongBoat (ls) or SpeedBoat (sb)?: ");
-                    const boatName = await this.rl.question("⚓️ Boat name?: ");
+                    const shipType = await this.rl.question("⚓️ LongShip (ls) or SpeedBoat (sb)?: ");
+                    const shipName = await this.rl.question("⚓️ Boat name?: ");
                     const xPos = Number(await this.rl.question("⚓️ X Position?: "));
                     const yPos = Number(await this.rl.question("⚓️ Y Position?: "));
-                    if (boatType === "ls") {
-                        this.boats[boatName] = new LongShip(xPos, yPos);
+                    const orientation = await this.rl.question("⚓️ Orientation (h or v)?: ");
+                    if (shipType === "ls") {
+                        this.ships[shipName] = new LongShip(shipName, xPos, yPos, orientation);
+                    } else if (shipType === "sb") {
+                        this.ships[shipName] = new SpeedBoat(shipName, xPos, yPos, orientation);
                     }
                     break;
                 case "l":
-                    console.log(this.boats);
+                    for (const [shipName, ship] of Object.entries(this.ships)) {
+                        console.log(`⛴️  [${ship.getPosition()}] ${ship.getName().padEnd(7).padStart(8)} ${ship.constructor.name.padEnd(11)} ${JSON.stringify(ship.getGridSpaces())}`);
+                    }
                     break;
                 default:
                     break
@@ -48,41 +53,69 @@ class Game {
 }
 
 abstract class Battleship {
+    protected name: string;
     protected locX: number;
     protected locY: number;
+    protected orientation: string;
     protected length: number;
-    protected height: number;
+    protected gridSpaces: [number, number][];
 
-    constructor(locX: number, locY: number, length: number, height: number) {
+    constructor(name: string, locX: number, locY: number, orientation: string, length: number) {
+        this.name = name;
         this.locX = locX;
         this.locY = locY;
+        this.orientation = orientation;
         this.length = length;
-        this.height = height;
+
+        this.gridSpaces = this.calculateGridSpaces();
     }
 
     move(moveX: number, moveY: number): void {
         this.locX += moveX; 
         this.locY += moveY; 
-    }
 
-    getGridSpaces(): number {
-        return this.length * this.height;
+        this.gridSpaces = this.calculateGridSpaces();
     }
 
     getPosition(): [number, number] {
         return [this.locX, this.locY]
     }
+
+    getGridSpaces(): [number, number][] {
+        return this.gridSpaces;
+    }
+
+    getName(): string {
+        return this.name;
+    }
+
+    calculateGridSpaces(): [number, number][] {
+        let spaces: [number, number][] = [];
+        if (this.orientation === "h") {
+            console.log(this.length);
+            for (var i = 0; i < this.length; i++) {
+                console.log(i);
+                spaces.push([this.locX + i, this.locY]);
+            }
+        } else if (this.orientation === "v") {
+            for (var i = 0; i < this.length; i++) {
+                spaces.push([this.locX, this.locY + i]);
+            }
+        }
+        console.log(spaces);
+        return spaces;
+    }
 }
 
 class LongShip extends Battleship {
-    constructor(locX: number, locY: number) {
-        super(locX, locY, 5, 1);
+    constructor(name: string, locX: number, locY: number, orientation: string) {
+        super(name, locX, locY, orientation, 5);
     }
 }
 
 class SpeedBoat extends Battleship {
-    constructor(locX: number, locY: number) {
-        super(locX, locY, 1, 1);
+    constructor(name: string, locX: number, locY: number, orientation: string) {
+        super(name, locX, locY, orientation, 1);
     }
 
     boost(newLocX: number, newLocY: number): void {
