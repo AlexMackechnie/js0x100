@@ -5,50 +5,70 @@ import { stdin as input, stdout as output } from "node:process";
 class Game {
     rl: readline.Interface;
     ships: { [key: string]: Battleship};
+    players: Array<Player>;
 
     constructor() {
         this.rl = readline.createInterface(input, output);
         this.ships = {}
+        this.players = [];
     }
 
     async gameLoop(): Promise<void> {
         this.instructions();
-        while(true) {
-            console.log("-------------");
-            const answer = await this.rl.question("⚓️ Your input: ");
+        this.initialisePlayers();
+        await this.getShipInputAndPlace();
 
-            switch(answer) {
-                case "c":
-                    const shipType = await this.rl.question("⚓️ LongShip (ls) or SpeedBoat (sb)?: ");
-                    const shipName = await this.rl.question("⚓️ Boat name?: ");
-                    const xPos = Number(await this.rl.question("⚓️ X Position?: "));
-                    const yPos = Number(await this.rl.question("⚓️ Y Position?: "));
-                    const orientation = await this.rl.question("⚓️ Orientation (h or v)?: ");
-                    if (shipType === "ls") {
-                        this.ships[shipName] = new LongShip(shipName, xPos, yPos, orientation);
-                    } else if (shipType === "sb") {
-                        this.ships[shipName] = new SpeedBoat(shipName, xPos, yPos, orientation);
-                    }
-                    break;
-                case "l":
-                    for (const [shipName, ship] of Object.entries(this.ships)) {
-                        console.log(`⛴️  [${ship.getPosition()}] ${ship.getName().padEnd(7).padStart(8)} ${ship.constructor.name.padEnd(11)} ${JSON.stringify(ship.getGridSpaces())}`);
-                    }
-                    break;
-                default:
-                    break
+        this.rl.close();
+    }
+
+    instructions(): void {
+    }
+
+    initialisePlayers(): void {
+        this.players = [
+            new Player("Player 1"),
+            new Player("Player 2"),
+        ];
+    }
+
+    async getShipInputAndPlace(): Promise<void> {
+        let ships: { [key: string]: Battleship} = {};
+        for (let player of this.players) {
+            console.log("-------------");
+            console.log(`⚓️ ${player.getName()}, place your ships!`);
+            for (var i = 0; i < 1; i++) {
+                const shipType = await this.rl.question("\n⚓️ LongShip (ls) or SpeedBoat (sb)?: ");
+                const shipName = await this.rl.question("⚓️ Boat name?: ");
+                const xPos = Number(await this.rl.question("⚓️ X Position?: "));
+                const yPos = Number(await this.rl.question("⚓️ Y Position?: "));
+                const orientation = await this.rl.question("⚓️ Orientation (h or v)?: ");
+                if (shipType === "ls") {
+                    ships[shipName] = new LongShip(shipName, xPos, yPos, orientation);
+                } else if (shipType === "sb") {
+                    ships[shipName] = new SpeedBoat(shipName, xPos, yPos, orientation);
+                }
+                console.log(ships[shipName].toString());
             }
             console.log("-------------");
         }
     }
+}
 
-    instructions(): void {
-        console.log("⚓️ (c) Create a ship.");
-        console.log("⚓️ (l) List ships.");
+class Player {
+    protected name: string;
+    protected ships: { [key: string]: Battleship};
+
+    constructor(name: string) {
+        this.name = name;
+        this.ships = {}
     }
 
-    getUserInput(): void {
-        readline
+    placeShips(ships: { [key: string]: Battleship}): void {
+        this.ships = ships;
+    }
+
+    getName(): string {
+        return this.name;
     }
 }
 
@@ -92,9 +112,7 @@ abstract class Battleship {
     calculateGridSpaces(): [number, number][] {
         let spaces: [number, number][] = [];
         if (this.orientation === "h") {
-            console.log(this.length);
             for (var i = 0; i < this.length; i++) {
-                console.log(i);
                 spaces.push([this.locX + i, this.locY]);
             }
         } else if (this.orientation === "v") {
@@ -102,8 +120,11 @@ abstract class Battleship {
                 spaces.push([this.locX, this.locY + i]);
             }
         }
-        console.log(spaces);
         return spaces;
+    }
+
+    toString(): string {
+        return `⛴️  [${this.getPosition()}] ${this.getName().padEnd(7).padStart(8)} ${this.constructor.name.padEnd(11)} ${JSON.stringify(this.getGridSpaces())}`;
     }
 }
 
@@ -125,4 +146,6 @@ class SpeedBoat extends Battleship {
 }
 
 let game = new Game();
-game.gameLoop();
+game.gameLoop().then(() => {
+    console.log("Game done!");
+});
