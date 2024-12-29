@@ -1,0 +1,14 @@
+{
+  "name": "x-in-y-ts",
+  "version": "1.0.0",
+  "main": "battleships.js",
+  "devDependencies": {
+    "@types/node": "^22.10.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

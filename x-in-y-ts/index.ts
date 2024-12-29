@@ -135,48 +135,4 @@ class Square implements Shape {
 
 // -- Classes can extend other classes.
 // To be used where behaviour or properties must be shared.
-
-console.log("\n🛳️🚢⛴️ ----- BATTLESHIPS -----🛳️🚢⛴️ ");
-
-abstract class Battleship {
-    locX: number;
-    locY: number;
-    length: number;
-    height: number;
-    constructor(locX: number, locY: number, length: number, height: number) {
-        this.locX = locX;
-        this.locY = locY;
-        this.length = length;
-        this.height = height;
-    }
-    move(moveX: number, moveY: number): void {
-        this.locX += moveX; 
-        this.locY += moveY; 
-    }
-    getGridSpaces(): number {
-        return this.length * this.height;
-    }
-}
-
-class LongShip extends Battleship {
-    constructor(locX: number, locY: number) {
-        super(locX, locY, 5, 1);
-    }
-}
-
-class Speedboat extends Battleship {
-    constructor(locX: number, locY: number) {
-        super(locX, locY, 1, 1);
-    }
-
-    boost(newLocX: number, newLocY: number): void {
-        this.locX = newLocX; 
-        this.locY = newLocY; 
-    }
-}
-
-let longShip: LongShip = new LongShip(1, 3);
-let speedboat: Speedboat = new Speedboat(5, 5);
-
-console.log(longShip.getGridSpaces());
-console.log(speedboat.getGridSpaces());
+// See battleships.ts
