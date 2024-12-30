@@ -15,13 +15,23 @@ class Game {
         this.instructions();
         this.initialisePlayers();
         await this.getShipInputAndPlace();
-        
+
+        let winner: Player;
+
+        gameLoop:
         while (true) {
-            for (var playerIndex= 0; playerIndex < this.players.length; playerIndex++) {
-                await this.takeTurn(playerIndex);
+            for (var playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
+                const gameOver = await this.takeTurn(playerIndex);
+                if (gameOver) {
+                    winner = this.players[playerIndex];
+                    break gameLoop;
+                }
                 console.log("---------------------------------------");
             }
         }
+
+        console.log("---------------------------------------");
+        console.log(`🏆 ${winner.getName()} wins!`);
         this.rl.close();
     }
 
@@ -60,7 +70,7 @@ class Game {
         // }
     }
 
-    async takeTurn(playerIndex: number): Promise<void> {
+    async takeTurn(playerIndex: number): Promise<boolean> {
         let attackingPlayer: Player = this.players[playerIndex];
         let defendingPlayer: Player = this.players[1 - playerIndex];
 
@@ -79,6 +89,13 @@ class Game {
                 }
             }
         }
+
+        if (!Object.keys(defendingPlayer.getShips()).length) {
+            console.log(`🌊 ${defendingPlayer.getName()} has no ships left!`);
+            return true;
+        }
+
+        return false;
     }
 }
 
@@ -187,6 +204,4 @@ class SpeedBoat extends Battleship {
 }
 
 let game = new Game();
-game.gameLoop().then(() => {
-    console.log("Game done!");
-});
+game.gameLoop();
