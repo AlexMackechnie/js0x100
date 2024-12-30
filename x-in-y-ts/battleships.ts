@@ -16,22 +16,21 @@ class Game {
         this.initialisePlayers();
         await this.getShipInputAndPlace();
 
-        let winner: Player;
-
         gameLoop:
         while (true) {
             for (var playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
                 const gameOver = await this.takeTurn(playerIndex);
                 if (gameOver) {
-                    winner = this.players[playerIndex];
+                    console.log("---------------------------------------");
+                    console.log(`🌊 ${this.players[1 - playerIndex].getName()} has no ships left!`);
+                    console.log(`🏆 ${this.players[playerIndex].getName()} wins!`);
+
                     break gameLoop;
                 }
                 console.log("---------------------------------------");
             }
         }
 
-        console.log("---------------------------------------");
-        console.log(`🏆 ${winner.getName()} wins!`);
         this.rl.close();
     }
 
@@ -48,11 +47,11 @@ class Game {
     async getShipInputAndPlace(): Promise<void> {
         console.log("---------------------------------------");
         let ships: { [key: string]: Battleship} = {};
-        this.players[0].placeShips({"Boaty": new LongShip("Boaty", 1, 3, "h") });
-        this.players[1].placeShips({"Speedy": new SpeedBoat("Speedy", 1, 1, "h") });
+        this.players[0].placeShips({"one1": new SpeedBoat("one1", 1, 1, "h"), "one2": new SpeedBoat("one2", 2, 2, "h") });
+        this.players[1].placeShips({"two1": new SpeedBoat("two1", 3, 3, "h"), "two2": new SpeedBoat("two2", 4, 4, "h") });
         // for (let player of this.players) {
         //     console.log(`⚓️ ${player.getName()}, place your ships!`);
-        //     for (var i = 0; i < 1; i++) {
+        //     for (var i = 0; i < 2; i++) {
         //         const shipType = await this.rl.question("\n⚓️ LongShip (ls) or SpeedBoat (sb)?: ");
         //         const shipName = await this.rl.question("⚓️ Boat name?: ");
         //         const xPos = Number(await this.rl.question("⚓️ X Position?: "));
@@ -77,6 +76,7 @@ class Game {
         const positionToHitString = await this.rl.question(`⚓️ ${attackingPlayer.getName()}, enter X,Y to hit: `);
         let positionToHit: number[] = positionToHitString.split(",").map((s: string) => parseFloat(s.trim()));
 
+        checkingForHit:
         for (const [shipName, ship] of Object.entries(defendingPlayer.getShips())) {
             for (const [i, coord] of ship.getGridSpaces().entries()) {
                 if (JSON.stringify(coord) === JSON.stringify(positionToHit)) {
@@ -86,12 +86,12 @@ class Game {
                         console.log(`⛴️ ${attackingPlayer.getName()} sunk ${defendingPlayer.getName()}'s ship: ${shipName}`);
                         defendingPlayer.removeShip(shipName);
                     }
+                    break checkingForHit;
                 }
             }
         }
 
         if (!Object.keys(defendingPlayer.getShips()).length) {
-            console.log(`🌊 ${defendingPlayer.getName()} has no ships left!`);
             return true;
         }
 
