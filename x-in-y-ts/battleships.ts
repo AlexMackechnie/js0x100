@@ -71,16 +71,22 @@ class Game {
         console.log(defendingPlayer.getShips());
 
         for (const [shipName, ship] of Object.entries(defendingPlayer.getShips())) {
-            console.log(ship);
-            for (const coord of ship.getGridSpaces()) {
-                console.log(coord);
-                console.log(JSON.stringify(coord) === JSON.stringify(positionToHit));
+            for (const [i, coord] of ship.getGridSpaces().entries()) {
                 if (JSON.stringify(coord) === JSON.stringify(positionToHit)) {
                     console.log(`HIT on ${positionToHit}!`);
+                    let remainingSpaces = ship.removeGridSpace(i);
+                    if (remainingSpaces.length === 0) {
+                        console.log(`SHIP SUNK: ${shipName}`);
+                        defendingPlayer.removeShip(shipName);
+                    }
                 }
             }
-
         }
+
+        console.log(
+            Object.values(defendingPlayer.getShips())
+                .map((s) => {return s.getGridSpaces()})
+        );
     }
 }
 
@@ -103,6 +109,10 @@ class Player {
 
     getShips(): { [key: string]: Battleship} {
         return this.ships;
+    }
+
+    removeShip(name: string): void {
+        delete this.ships[name];
     }
 }
 
@@ -136,6 +146,11 @@ abstract class Battleship {
     }
 
     getGridSpaces(): [number, number][] {
+        return this.gridSpaces;
+    }
+
+    removeGridSpace(index: number): [number, number][] {
+        this.gridSpaces.splice(index, 1);
         return this.gridSpaces;
     }
 
