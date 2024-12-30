@@ -51,7 +51,7 @@ class Game {
             let ships: { [key: string]: Battleship} = {};
             console.log(`⚓️ ${player.getName()}, place your ships!`);
             for (let i = 0; i < 1; i++) {
-                const shipType: string = await this.rl.question("\n⚓️ LongShip (ls) or SpeedBoat (sb)?: ");
+                const shipType: string = await this.rl.question("\n⚓️ LongShip[1x5] (ls) or SpeedBoat[1x1] (sb)?: ");
                 const shipName: string = await this.rl.question("⚓️ Boat name?: ");
                 const positionToPlaceString: string = await this.rl.question("⚓️ X,Y Position?: ");
                 const positionToPlace: number[] = positionToPlaceString.split(",").map((s: string) => parseFloat(s.trim()));
