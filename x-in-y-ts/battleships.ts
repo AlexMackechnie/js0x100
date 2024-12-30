@@ -4,12 +4,10 @@ import { stdin as input, stdout as output } from "node:process";
 
 class Game {
     rl: readline.Interface;
-    ships: { [key: string]: Battleship};
     players: Array<Player>;
 
     constructor() {
         this.rl = readline.createInterface(input, output);
-        this.ships = {}
         this.players = [];
     }
 
@@ -19,8 +17,8 @@ class Game {
         await this.getShipInputAndPlace();
         
         while (true) {
-            for (const player of this.players) {
-                await this.takeTurn(player);
+            for (var playerIndex= 0; playerIndex < this.players.length; playerIndex++) {
+                await this.takeTurn(playerIndex);
                 console.log("---------------------------------------");
             }
         }
@@ -40,29 +38,49 @@ class Game {
     async getShipInputAndPlace(): Promise<void> {
         console.log("---------------------------------------");
         let ships: { [key: string]: Battleship} = {};
-        for (let player of this.players) {
-            console.log(`⚓️ ${player.getName()}, place your ships!`);
-            for (var i = 0; i < 1; i++) {
-                const shipType = await this.rl.question("\n⚓️ LongShip (ls) or SpeedBoat (sb)?: ");
-                const shipName = await this.rl.question("⚓️ Boat name?: ");
-                const xPos = Number(await this.rl.question("⚓️ X Position?: "));
-                const yPos = Number(await this.rl.question("⚓️ Y Position?: "));
-                const orientation = await this.rl.question("⚓️ Orientation (h or v)?: ");
-                if (shipType === "ls") {
-                    ships[shipName] = new LongShip(shipName, xPos, yPos, orientation);
-                } else if (shipType === "sb") {
-                    ships[shipName] = new SpeedBoat(shipName, xPos, yPos, orientation);
-                }
-                console.log(ships[shipName].toString());
-            }
-            console.log("---------------------------------------");
-        }
+        this.players[0].placeShips({"Boaty": new LongShip("Boaty", 1, 3, "h") });
+        this.players[1].placeShips({"Speedy": new SpeedBoat("Speedy", 1, 1, "h") });
+        // for (let player of this.players) {
+        //     console.log(`⚓️ ${player.getName()}, place your ships!`);
+        //     for (var i = 0; i < 1; i++) {
+        //         const shipType = await this.rl.question("\n⚓️ LongShip (ls) or SpeedBoat (sb)?: ");
+        //         const shipName = await this.rl.question("⚓️ Boat name?: ");
+        //         const xPos = Number(await this.rl.question("⚓️ X Position?: "));
+        //         const yPos = Number(await this.rl.question("⚓️ Y Position?: "));
+        //         const orientation = await this.rl.question("⚓️ Orientation (h or v)?: ");
+        //         if (shipType === "ls") {
+        //             ships[shipName] = new LongShip(shipName, xPos, yPos, orientation);
+        //         } else if (shipType === "sb") {
+        //             ships[shipName] = new SpeedBoat(shipName, xPos, yPos, orientation);
+        //         }
+        //         player.placeShips(ships);
+        //         console.log(ships[shipName].toString());
+        //     }
+        //     console.log("---------------------------------------");
+        // }
     }
 
-    async takeTurn(player: Player): Promise<void> {
-        const positionToHitString = await this.rl.question(`⚓️ ${player.getName()}, enter X,Y to hit: `);
+    async takeTurn(playerIndex: number): Promise<void> {
+        let attackingPlayer: Player = this.players[playerIndex];
+        let defendingPlayer: Player = this.players[1 - playerIndex];
+
+        const positionToHitString = await this.rl.question(`⚓️ ${attackingPlayer.getName()}, enter X,Y to hit: `);
         let positionToHit: number[] = positionToHitString.split(",").map((s: string) => parseFloat(s.trim()));
         console.log(positionToHit);
+
+        console.log(defendingPlayer.getShips());
+
+        for (const [shipName, ship] of Object.entries(defendingPlayer.getShips())) {
+            console.log(ship);
+            for (const coord of ship.getGridSpaces()) {
+                console.log(coord);
+                console.log(JSON.stringify(coord) === JSON.stringify(positionToHit));
+                if (JSON.stringify(coord) === JSON.stringify(positionToHit)) {
+                    console.log(`HIT on ${positionToHit}!`);
+                }
+            }
+
+        }
     }
 }
 
@@ -81,6 +99,10 @@ class Player {
 
     getName(): string {
         return this.name;
+    }
+
+    getShips(): { [key: string]: Battleship} {
+        return this.ships;
     }
 }
 
