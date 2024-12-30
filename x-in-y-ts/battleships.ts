@@ -1,7 +1,6 @@
 import * as readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 
-
 class Game {
     rl: readline.Interface;
     players: Array<Player>;
@@ -18,7 +17,7 @@ class Game {
 
         gameLoop:
         while (true) {
-            for (var playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
+            for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
                 const gameOver = await this.takeTurn(playerIndex);
                 if (gameOver) {
                     console.log("---------------------------------------");
@@ -51,7 +50,7 @@ class Game {
         for (let player of this.players) {
             let ships: { [key: string]: Battleship} = {};
             console.log(`⚓️ ${player.getName()}, place your ships!`);
-            for (var i = 0; i < 2; i++) {
+            for (let i = 0; i < 2; i++) {
                 const shipType: string = await this.rl.question("\n⚓️ LongShip (ls) or SpeedBoat (sb)?: ");
                 const shipName: string = await this.rl.question("⚓️ Boat name?: ");
                 const positionToPlaceString: string = await this.rl.question("⚓️ X,Y Position?: ");
@@ -79,7 +78,7 @@ class Game {
         checkingForHit:
         for (const [shipName, ship] of Object.entries(defendingPlayer.getShips())) {
             for (const [i, coord] of ship.getGridSpaces().entries()) {
-                if (JSON.stringify(coord) === JSON.stringify(positionToHit)) {
+                if (coord[0] === positionToHit[0] && coord[1] === positionToHit[1]) {
                     console.log(`💥 HIT on ${positionToHit}!`);
                     let remainingSpaces = ship.removeGridSpace(i);
                     if (remainingSpaces.length === 0) {
@@ -172,11 +171,11 @@ abstract class Battleship {
     calculateGridSpaces(): [number, number][] {
         let spaces: [number, number][] = [];
         if (this.orientation === "h") {
-            for (var i = 0; i < this.length; i++) {
+            for (let i = 0; i < this.length; i++) {
                 spaces.push([this.locX + i, this.locY]);
             }
         } else if (this.orientation === "v") {
-            for (var i = 0; i < this.length; i++) {
+            for (let i = 0; i < this.length; i++) {
                 spaces.push([this.locX, this.locY + i]);
             }
         }
