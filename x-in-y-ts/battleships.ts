@@ -11,6 +11,7 @@ class Game {
     }
 
     async gameLoop(): Promise<void> {
+        this.clearScreen();
         this.instructions();
         this.initialisePlayers();
         await this.getShipInputAndPlace();
@@ -20,13 +21,13 @@ class Game {
             for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
                 const gameOver = await this.takeTurn(playerIndex);
                 if (gameOver) {
-                    console.log("---------------------------------------");
-                    console.log(`🌊 ${this.players[1 - playerIndex].getName()} has no ships left!`);
+                    console.log(`🌊 ${this.players[1 - playerIndex].getName()} has no ships left!\n`);
                     console.log(`🏆 ${this.players[playerIndex].getName()} wins!`);
+
+                    await this.rl.question("\n⚓️ Press Enter to exit: ");
 
                     break gameLoop;
                 }
-                console.log("---------------------------------------");
             }
         }
 
@@ -44,13 +45,12 @@ class Game {
     }
 
     async getShipInputAndPlace(): Promise<void> {
-        console.log("---------------------------------------");
         // this.players[0].placeShips({"one1": new LongShip("one1", 1, 1, "v"), "one2": new SpeedBoat("one2", 2, 2, "h") });
         // this.players[1].placeShips({"two1": new LongShip("two1", 3, 1, "v"), "two2": new SpeedBoat("two2", 4, 4, "h") });
         for (let player of this.players) {
             let ships: { [key: string]: Battleship} = {};
             console.log(`⚓️ ${player.getName()}, place your ships!`);
-            for (let i = 0; i < 2; i++) {
+            for (let i = 0; i < 1; i++) {
                 const shipType: string = await this.rl.question("\n⚓️ LongShip (ls) or SpeedBoat (sb)?: ");
                 const shipName: string = await this.rl.question("⚓️ Boat name?: ");
                 const positionToPlaceString: string = await this.rl.question("⚓️ X,Y Position?: ");
@@ -64,7 +64,8 @@ class Game {
                 console.log(ships[shipName].toString());
             }
             player.placeShips(ships);
-            console.log("---------------------------------------");
+            await this.rl.question("\n⚓️ Press Enter to continue: ");
+            this.clearScreen();
         }
     }
 
@@ -85,18 +86,35 @@ class Game {
                         console.log(`⛴️ ${attackingPlayer.getName()} sunk ${defendingPlayer.getName()}'s ship: ${shipName}`);
                         defendingPlayer.removeShip(shipName);
                     }
+                    await this.rl.question("\n⚓️ Press Enter to continue: ");
                     break checkingForHit;
                 }
             }
         }
 
         // console.log(defendingPlayer.getShips());
+        this.clearScreen();
 
         if (!Object.keys(defendingPlayer.getShips()).length) {
             return true;
         }
 
         return false;
+    }
+
+    clearScreen(): void {
+        process.stdout.write('\x1Bc');
+
+        console.log(`
+         _           _   _   _           _     _           
+        | |         | | | | | |         | |   (_)          
+        | |__   __ _| |_| |_| | ___  ___| |__  _ _ __  ___ 
+        | '_ \\ / _\` | __| __| |/ _ \\/ __| '_ \\| | '_ \\/ __|
+        | |_) | (_| | |_| |_| |  __/\\__ \\ | | | | |_) \\__ \\
+        |_.__/ \\__,_|\\__|\\__|_|\\___||___/_| |_|_| .__/|___/
+                                                | |        
+                                                |_|        
+        `);
     }
 }
 
