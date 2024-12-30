@@ -17,7 +17,13 @@ class Game {
         this.instructions();
         this.initialisePlayers();
         await this.getShipInputAndPlace();
-
+        
+        while (true) {
+            for (const player of this.players) {
+                await this.takeTurn(player);
+                console.log("---------------------------------------");
+            }
+        }
         this.rl.close();
     }
 
@@ -32,9 +38,9 @@ class Game {
     }
 
     async getShipInputAndPlace(): Promise<void> {
+        console.log("---------------------------------------");
         let ships: { [key: string]: Battleship} = {};
         for (let player of this.players) {
-            console.log("-------------");
             console.log(`⚓️ ${player.getName()}, place your ships!`);
             for (var i = 0; i < 1; i++) {
                 const shipType = await this.rl.question("\n⚓️ LongShip (ls) or SpeedBoat (sb)?: ");
@@ -49,8 +55,14 @@ class Game {
                 }
                 console.log(ships[shipName].toString());
             }
-            console.log("-------------");
+            console.log("---------------------------------------");
         }
+    }
+
+    async takeTurn(player: Player): Promise<void> {
+        const positionToHitString = await this.rl.question(`⚓️ ${player.getName()}, enter X,Y to hit: `);
+        let positionToHit: number[] = positionToHitString.split(",").map((s: string) => parseFloat(s.trim()));
+        console.log(positionToHit);
     }
 }
 
