@@ -66,27 +66,19 @@ class Game {
 
         const positionToHitString = await this.rl.question(`⚓️ ${attackingPlayer.getName()}, enter X,Y to hit: `);
         let positionToHit: number[] = positionToHitString.split(",").map((s: string) => parseFloat(s.trim()));
-        console.log(positionToHit);
-
-        console.log(defendingPlayer.getShips());
 
         for (const [shipName, ship] of Object.entries(defendingPlayer.getShips())) {
             for (const [i, coord] of ship.getGridSpaces().entries()) {
                 if (JSON.stringify(coord) === JSON.stringify(positionToHit)) {
-                    console.log(`HIT on ${positionToHit}!`);
+                    console.log(`💥 HIT on ${positionToHit}!`);
                     let remainingSpaces = ship.removeGridSpace(i);
                     if (remainingSpaces.length === 0) {
-                        console.log(`SHIP SUNK: ${shipName}`);
+                        console.log(`⛴️ ${attackingPlayer.getName()} sunk ${defendingPlayer.getName()}'s ship: ${shipName}`);
                         defendingPlayer.removeShip(shipName);
                     }
                 }
             }
         }
-
-        console.log(
-            Object.values(defendingPlayer.getShips())
-                .map((s) => {return s.getGridSpaces()})
-        );
     }
 }
 
