@@ -32,6 +32,7 @@ class Game {
         }
 
         this.rl.close();
+        process.stdout.write('\x1Bc');
     }
 
     instructions(): void {
