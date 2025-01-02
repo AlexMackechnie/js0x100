@@ -12,6 +12,3 @@ axios.get("https://randomuser.me/api").then((response) => {
 }).finally(() => {
     console.log("Completed ✅");
 })
-
-
-

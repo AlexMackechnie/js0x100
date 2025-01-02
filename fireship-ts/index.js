@@ -19,4 +19,12 @@ arr.push(1);
 arr.push(2);
 const arr2 = ["hello"];
 console.log(arr2);
+// Generics
+class Observable {
+    value;
+    constructor(value) {
+        this.value = value;
+    }
+}
+let x;
 export {};
