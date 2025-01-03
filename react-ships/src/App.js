@@ -86,7 +86,11 @@ function Game() {
     function attack(currentPlayer, coord) {
         console.log(`${currentPlayer} has attacked ${coord}.`);
         let newHitBoardStates = hitBoardStates.map(row => [...row]);
-        newHitBoardStates[currentPlayer][coord[0]][coord[1]] = "attacked";
+        if (boardStates[1 - currentPlayer][coord[0]][coord[1]] === "ship") {
+            newHitBoardStates[currentPlayer][coord[0]][coord[1]] = "hit";
+        } else {
+            newHitBoardStates[currentPlayer][coord[0]][coord[1]] = "miss";
+        }
         setHitBoardStates(newHitBoardStates);
     }
 
