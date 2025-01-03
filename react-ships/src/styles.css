@@ -21,6 +21,10 @@
     background-color: green;
 }
 
+.attacked {
+    background-color: red;
+}
+
 .next-turn-button {
     margin: 12px;
 }
