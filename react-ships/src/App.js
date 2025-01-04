@@ -67,11 +67,36 @@ function Game() {
             Array(5).fill(null).map(() => Array(5).fill("water")),
         ]
     );
-    const [currentPlayer, setCurrentPlayer] = useState(1);
+    const [currentPlayer, setCurrentPlayer] = useState(0);
+    const [winner, setWinner] = useState(null);
+    const [shipsArePlaced, setShipsArePlaced] = useState([false, false]);
+
+    useEffect(() => {
+        let newShipsArePlaced = [...shipsArePlaced];
+        newShipsArePlaced[currentPlayer] = true;
+        setShipsArePlaced(newShipsArePlaced);
+    }, [boardStates]);
 
     useEffect(() => {
         nextTurn();
-    }, [boardStates]);
+    }, [shipsArePlaced]);
+
+    useEffect(() => {
+        if (!shipsArePlaced[0] || !shipsArePlaced[1]) {
+            return;
+        }
+        for (let i = 0; i < hitBoardStates[currentPlayer].length; i++) {
+            for (let j = 0; j < boardStates[1 - currentPlayer][i].length; j++) {
+                let hitStatus = hitBoardStates[currentPlayer][i][j];
+                let shipStatus = boardStates[1 - currentPlayer][i][j];
+
+                if (shipStatus === "ship" && hitStatus != "hit") {
+                    return;
+                }
+            }
+        }
+        setWinner(currentPlayer);
+    }, [hitBoardStates])
 
     function nextTurn() {
         setCurrentPlayer(1 - currentPlayer);
@@ -100,6 +125,11 @@ function Game() {
 
     return (
         <div className="game">
+            {
+                (winner !== null) && (
+                    <h2>Player {currentPlayer + 1} wins!</h2>
+                )
+            }
             {
                  !hasPlacedShips(boardStates[currentPlayer]) && (
                     <>
