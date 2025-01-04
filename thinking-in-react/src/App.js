@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export default function App() {
     return (
     <>
@@ -17,21 +19,42 @@ const PRODUCTS = [
 ]
 
 function FilterableProductTable() {
+    const [filterText, setFilterText] = useState("");
+    const [inStockOnly, setInStockOnly] = useState(false);
+
     return (
         <div>
-            <SearchBar />
-            <ProductTable products={PRODUCTS} />
+            <SearchBar 
+                filterText={filterText}
+                inStockOnly={inStockOnly}
+                onFilterTextChange={setFilterText}
+                onInStockOnlyChange={setInStockOnly}
+            />
+            <ProductTable 
+                products={PRODUCTS}
+                filterText={filterText}
+                inStockOnly={inStockOnly}
+            />
         </div>
     );
 }
 
-function SearchBar() {
+function SearchBar({ filterText, inStockOnly, onFilterTextChange, onInStockOnlyChange }) {
     return (
         <div>
             <form>
-                <input type="text" placeholder="search..." /><br/>
+                <input 
+                    type="text"
+                    placeholder="search..."
+                    value={filterText}
+                    onChange={(e) => onFilterTextChange(e.target.value)}
+                />
                 <label>
-                    <input type="checkbox" />
+                    <input 
+                        type="checkbox"
+                        value={inStockOnly}
+                        onChange={(e) => onInStockOnlyChange(e.target.checked)}
+                    />
                     {" "}
                     Only show products in stock
                 </label>
@@ -40,11 +63,23 @@ function SearchBar() {
     );
 }
 
-function ProductTable({ products }) {
+function ProductTable({ products, filterText, inStockOnly }) {
     const rows = [];
     let lastCategory = null;
 
     products.forEach((product) => {
+        if (
+            product.name.toLowerCase().indexOf(
+                filterText.toLowerCase()
+            ) === -1
+        ) {
+            return;
+        }
+
+        if (inStockOnly && !product.stocked) {
+            return;
+        }
+
         if (lastCategory !== product.category) {
             rows.push(
                 <ProductCategoryRow
@@ -100,5 +135,3 @@ function ProductRow({ product }) {
         </tr>
     );
 }
-
-
