@@ -2,10 +2,10 @@ import { useState } from "react";
 
 export default function App() {
     return (
-    <>
-        <h2>Shop</h2>
-        <FilterableProductTable />
-    </>
+        <>
+            <h2>Shop</h2>
+            <FilterableProductTable />
+        </>
     );
 }
 

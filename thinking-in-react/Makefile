@@ -1,5 +1,14 @@
-install:
-	npm install
+# -------- APP --------
 
-run:
-	npm start
+
+
+
+
+# -------- WEB --------
+
+w-install:
+	cd web && npm install
+
+w-run:
+	cd web && npm start
+
