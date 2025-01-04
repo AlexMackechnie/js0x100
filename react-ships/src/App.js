@@ -46,10 +46,14 @@ function Board({ mode, squares, onSquareClick, onNextTurnClick }) {
                     })
                 }
             </div>
-            <button 
-                className="next-turn-button"
-                onClick={() => nextTurnSubmit()}
-            >Next Turn</button>
+            {
+                onNextTurnClick && (
+                    <button 
+                        className="next-turn-button"
+                        onClick={() => nextTurnSubmit()}
+                    >Next Turn</button>
+                )
+            }
         </>
     );
 }
@@ -128,11 +132,19 @@ function Game() {
         <div className="game">
             {
                 (winner !== null) && (
-                    <h2>Player {currentPlayer + 1} wins!</h2>
+                    <>
+                        <p>Player {currentPlayer + 1} wins!</p>
+                        <Board 
+                            mode="attack"
+                            squares={hitBoardStates[currentPlayer]}
+                            onSquareClick={null}
+                            onNextTurnClick={null}
+                        />
+                    </>
                 )
             }
             {
-                 !(shipsArePlaced[currentPlayer]) && (
+                 !(shipsArePlaced[currentPlayer]) && (winner === null) && (
                     <>
                         <p>Player {currentPlayer + 1}, place your ships!</p>
                         <Board 
@@ -147,7 +159,7 @@ function Game() {
                 )
             }
             {
-                (shipsArePlaced[currentPlayer]) && (
+                (shipsArePlaced[currentPlayer]) && (winner === null) && (
                     <>
                         <p>Player {currentPlayer + 1}, attack!</p>
                         <Board 
