@@ -67,14 +67,16 @@ function Game() {
             Array(5).fill(null).map(() => Array(5).fill("water")),
         ]
     );
-    const [currentPlayer, setCurrentPlayer] = useState(0);
+    const [currentPlayer, setCurrentPlayer] = useState(1);
     const [winner, setWinner] = useState(null);
     const [shipsArePlaced, setShipsArePlaced] = useState([false, false]);
 
     useEffect(() => {
-        let newShipsArePlaced = [...shipsArePlaced];
-        newShipsArePlaced[currentPlayer] = true;
-        setShipsArePlaced(newShipsArePlaced);
+        if (cellsAreNotWater(boardStates[currentPlayer])) {
+            let newShipsArePlaced = [...shipsArePlaced];
+            newShipsArePlaced[currentPlayer] = true;
+            setShipsArePlaced(newShipsArePlaced);
+        }
     }, [boardStates]);
 
     useEffect(() => {
@@ -109,7 +111,6 @@ function Game() {
     }
 
     function attack(currentPlayer, coord) {
-        console.log(`${currentPlayer} has attacked ${coord}.`);
         let newHitBoardStates = hitBoardStates.map(row => [...row]);
         if (boardStates[1 - currentPlayer][coord[0]][coord[1]] === "ship") {
             newHitBoardStates[currentPlayer][coord[0]][coord[1]] = "hit";
@@ -119,7 +120,7 @@ function Game() {
         setHitBoardStates(newHitBoardStates);
     }
 
-    function hasPlacedShips(ships) {
+    function cellsAreNotWater(ships) {
         return !ships.every(row => row.every(cell => cell === "water"));
     }
 
@@ -131,7 +132,7 @@ function Game() {
                 )
             }
             {
-                 !hasPlacedShips(boardStates[currentPlayer]) && (
+                 !(shipsArePlaced[currentPlayer]) && (
                     <>
                         <p>Player {currentPlayer + 1}, place your ships!</p>
                         <Board 
@@ -146,7 +147,7 @@ function Game() {
                 )
             }
             {
-                hasPlacedShips(boardStates[currentPlayer]) && (
+                (shipsArePlaced[currentPlayer]) && (
                     <>
                         <p>Player {currentPlayer + 1}, attack!</p>
                         <Board 
