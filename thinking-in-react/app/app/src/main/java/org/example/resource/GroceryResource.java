@@ -27,6 +27,9 @@ public class GroceryResource {
         products.add(new ProductDto("Vegetables", "$2", true, "Spinach"));
         products.add(new ProductDto("Vegetables", "$4", false, "Kale"));
         products.add(new ProductDto("Vegetables", "$1", true, "Tomato"));
+        products.add(new ProductDto("Meat", "$4", false, "Chicken"));
+        products.add(new ProductDto("Meat", "$5", true, "Steak"));
+        products.add(new ProductDto("Meat", "$5", true, "Salmon"));
 
         return Response.ok(products).build();
     }
