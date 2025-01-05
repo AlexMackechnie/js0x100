@@ -1,5 +1,7 @@
 package org.example.config;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.dropwizard.core.Configuration;
@@ -7,15 +9,16 @@ import jakarta.validation.constraints.NotEmpty;
 
 public class Config extends Configuration {
     @NotEmpty
-    private String test;
+    private List<String> allowedOrigins;
 
     @JsonProperty
-    public String getTest() {
-        return test;
+    public List<String> getAllowedOrigins() {
+        return allowedOrigins;
     }
 
     @JsonProperty
-    public void setTest(String test) {
-        this.test = test;
+    public void setAllowedOrigins(List<String> allowedOrigins) {
+        this.allowedOrigins = allowedOrigins;
     }
+
 }

@@ -22,14 +22,12 @@ public class GroceryResource {
         List<ProductDto> products = new ArrayList<>();
 
         products.add(new ProductDto("Fruits", "$1", true, "Apple"));
-        products.add(new ProductDto("Fruits", "$1", true, "Dragonfruit"));
-        products.add(new ProductDto("Fruits", "$2", false, "Passionfruit"));
+        products.add(new ProductDto("Fruits", "$1", true, "Banana"));
+        products.add(new ProductDto("Fruits", "$2", false, "Orange"));
         products.add(new ProductDto("Vegetables", "$2", true, "Spinach"));
-        products.add(new ProductDto("Vegetables", "$4", false, "Pumpkin"));
-        products.add(new ProductDto("Vegetables", "$1", true, "Peas"));
+        products.add(new ProductDto("Vegetables", "$4", false, "Kale"));
+        products.add(new ProductDto("Vegetables", "$1", true, "Tomato"));
 
-        return Response.ok(products)
-            .header("Access-Control-Allow-Origin", "http://localhost:3000")
-            .build();
+        return Response.ok(products).build();
     }
 }

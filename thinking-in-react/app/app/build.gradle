@@ -33,6 +33,6 @@ application {
 }
 
 run {
-    args = ["server", "config.yml"]
+    args = ["server", "dev.yml"]
 }
 
