@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function App() {
     return (
@@ -21,6 +21,15 @@ const PRODUCTS = [
 function FilterableProductTable() {
     const [filterText, setFilterText] = useState("");
     const [inStockOnly, setInStockOnly] = useState(false);
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:8080/grocery")
+            .then((res) => res.json())
+            .then((data) => {
+                setProducts(data);
+            });
+    }, []);
 
     return (
         <div>
@@ -31,7 +40,7 @@ function FilterableProductTable() {
                 onInStockOnlyChange={setInStockOnly}
             />
             <ProductTable 
-                products={PRODUCTS}
+                products={products}
                 filterText={filterText}
                 inStockOnly={inStockOnly}
             />

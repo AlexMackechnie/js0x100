@@ -9,6 +9,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("/grocery")
 @Produces(MediaType.APPLICATION_JSON)
@@ -17,7 +18,7 @@ public class GroceryResource {
     public GroceryResource() {}
 
     @GET
-    public List<ProductDto> getGroceries() {
+    public Response getGroceries() {
         List<ProductDto> products = new ArrayList<>();
 
         products.add(new ProductDto("Fruits", "$1", true, "Apple"));
@@ -27,7 +28,8 @@ public class GroceryResource {
         products.add(new ProductDto("Vegetables", "$4", false, "Pumpkin"));
         products.add(new ProductDto("Vegetables", "$1", true, "Peas"));
 
-        return products;
+        return Response.ok(products)
+            .header("Access-Control-Allow-Origin", "http://localhost:3000")
+            .build();
     }
-
 }
