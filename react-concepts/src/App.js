@@ -1,4 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
+import UseRefComponent from './component/useRefExample';
+import UseReducerExampleComponent from './component/useReducerExample';
 
 export default function App() {
     return (
@@ -31,6 +33,20 @@ export default function App() {
                 description=""
                 defaultState={false}>
                 <MemoExampleComponent />
+            </ConditionalShower>
+
+            <ConditionalShower
+                name="useRef"
+                description=""
+                defaultState={false}>
+                <UseRefComponent />
+            </ConditionalShower>
+
+            <ConditionalShower
+                name="useReducer"
+                description=""
+                defaultState={true}>
+                <UseReducerExampleComponent />
             </ConditionalShower>
         </>
     );
