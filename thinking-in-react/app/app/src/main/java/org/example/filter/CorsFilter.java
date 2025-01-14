@@ -37,6 +37,4 @@ public class CorsFilter extends GenericFilter {
             chain.doFilter(request, response);
         }
     }
-
-
 }

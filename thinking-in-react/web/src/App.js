@@ -9,6 +9,18 @@ export default function App() {
     );
 }
 
+function WrapperComponent({ children }) {
+    return (
+        <div style={{"color": "blue"}}>
+            {children}
+        </div>
+    );
+}
+
+function InnerComponent({ children }) {
+    return <h2>{children}</h2>
+}
+
 const PRODUCTS = [
     {category: "Fruits", price: "$1", stocked: true, name: "Apple"},
     {category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit"},
