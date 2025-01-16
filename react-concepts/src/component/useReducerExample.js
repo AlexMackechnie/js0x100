@@ -16,7 +16,7 @@ function reducer(state, action) {
     }
 }
 
-export default function UseReducerExampleComponent() {
+export default function UseReducerComponent() {
     const [state, dispatch] = useReducer(reducer, {
         count1: 42,
         count2: 142

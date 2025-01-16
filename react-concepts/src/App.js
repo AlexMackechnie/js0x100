@@ -1,6 +1,10 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import UseRefComponent from './component/useRefExample';
-import UseReducerExampleComponent from './component/useReducerExample';
+import UseReducerComponent from './component/useReducerExample';
+import UseContextComponent from './component/useContextExample';
+import UseCallbackComponent from './component/useCallbackExample';
+import PortalComponent from './component/portals';
+import SuspenseComponent from './component/suspense';
 
 export default function App() {
     return (
@@ -45,8 +49,36 @@ export default function App() {
             <ConditionalShower
                 name="useReducer"
                 description=""
+                defaultState={false}>
+                <UseReducerComponent />
+            </ConditionalShower>
+
+            <ConditionalShower
+                name="useContext"
+                description=""
+                defaultState={false}>
+                <UseContextComponent />
+            </ConditionalShower>
+
+            <ConditionalShower
+                name="useCallback"
+                description=""
+                defaultState={false}>
+                <UseCallbackComponent />
+            </ConditionalShower>
+
+            <ConditionalShower
+                name="Portals"
+                description=""
+                defaultState={false}>
+                <PortalComponent />
+            </ConditionalShower>
+
+            <ConditionalShower
+                name="Suspense"
+                description=""
                 defaultState={true}>
-                <UseReducerExampleComponent />
+                <SuspenseComponent />
             </ConditionalShower>
         </>
     );
@@ -154,12 +186,9 @@ function ParentComponent() {
     const [dataToPass, setDataToPass] = useState("🚀");
     const [localData, setLocalData] = useState("🏚️");
 
-    console.log("ParentComponent re-rendering...");
-
+    console.log("ParentComponent re-render attempt...");
     useEffect(() => {
-        return () => {
-            console.log("ParentComponent unmount...");
-        };
+        console.log("ParentComponent re-render complete.");
     });
 
     return (
@@ -172,7 +201,12 @@ function ParentComponent() {
             <h4>Parent State (not passed down)</h4>
             <p>Update parent state (not passed down): <input value={localData} onChange={(e) => setLocalData(e.target.value)} /></p>
             <p>{localData}</p>
-            <ChildComponent data={dataToPass} /> 
+
+            {/* Without MEMOIZATION (re-renders even if props are the same.) */}
+            {/* <ChildComponent data={dataToPass} />  */}
+
+            {/* With MEMOIZATION (doesn't re-render unless props change(). */}
+            <MemoizedChildComponent data={dataToPass} /> 
         </div>
     );
 }
@@ -180,7 +214,10 @@ function ParentComponent() {
 function ChildComponent({ data }) {
     const [unrelatedState, setUnrelatedState] = useState("🎃");
 
-    console.log("ChildComponent re-rendering...");
+    console.log("ChildComponent re-render attempt...");
+    useEffect(() => {
+        console.log("ChildComponent re-render complete.");
+    });
 
     return (
         <div>
@@ -195,6 +232,8 @@ function ChildComponent({ data }) {
         </div>
     );
 }
+
+const MemoizedChildComponent = memo(ChildComponent);
 
 function MemoExampleComponent() {
     return (
