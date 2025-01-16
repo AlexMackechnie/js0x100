@@ -3,6 +3,7 @@ package org.example.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.example.dao.ProductDao;
 import org.example.dto.ProductDto;
 
 import jakarta.ws.rs.GET;
@@ -15,7 +16,11 @@ import jakarta.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class GroceryResource {
 
-    public GroceryResource() {}
+    private final ProductDao productDao;
+
+    public GroceryResource(ProductDao productDao) {
+        this.productDao = productDao;
+    }
 
     @GET
     public Response getGroceries() {

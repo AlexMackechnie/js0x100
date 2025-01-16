@@ -2,6 +2,7 @@ package org.example.entity;
 
 import java.math.BigDecimal;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -10,9 +11,13 @@ import jakarta.persistence.Table;
 @Table
 public class ProductEntity {
 	@Id
+	@Column(name = "product_name")
 	private String productName;
+	@Column(name = "category_name")
 	private String categoryName;
+	@Column(name = "price")
 	private BigDecimal price;
+	@Column(name = "in_stock")
 	private boolean inStock;
 
 	public String getProductName() {
