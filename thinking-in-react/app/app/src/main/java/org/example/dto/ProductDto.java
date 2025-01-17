@@ -1,12 +1,14 @@
 package org.example.dto;
 
+import java.math.BigDecimal;
+
 public class ProductDto {
     private String category;
-    private String price;
+    private BigDecimal price;
     private boolean stocked;
     private String name;
 
-    public ProductDto(String category, String price, boolean stocked, String name) {
+    public ProductDto(String category, BigDecimal price, boolean stocked, String name) {
         this.category = category;
         this.price = price;
         this.stocked = stocked;
@@ -21,11 +23,11 @@ public class ProductDto {
         this.category = category;
     }
 
-    public String getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

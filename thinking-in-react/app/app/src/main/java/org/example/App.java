@@ -8,6 +8,8 @@ import org.example.entity.ProductEntity;
 import org.example.filter.CorsFilter;
 import org.example.resource.GroceryResource;
 
+import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
+import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
@@ -17,10 +19,10 @@ import jakarta.servlet.DispatcherType;
 
 public class App extends Application<Config> {
     private final HibernateBundle<Config> hibernate = new HibernateBundle<Config>(ProductEntity.class) {
-		@Override
-		public DataSourceFactory getDataSourceFactory(Config configuration) {
+        @Override
+        public DataSourceFactory getDataSourceFactory(Config configuration) {
             return configuration.getDatabase();
-		}
+        }
     };
 
     public static void main(String[] args) throws Exception {
@@ -29,6 +31,12 @@ public class App extends Application<Config> {
 
     @Override
     public void initialize(Bootstrap<Config> bootstrap) {
+        EnvironmentVariableSubstitutor substitutor = new EnvironmentVariableSubstitutor(false);
+        SubstitutingSourceProvider provider = new SubstitutingSourceProvider(
+            bootstrap.getConfigurationSourceProvider(),
+            substitutor
+        );
+        bootstrap.setConfigurationSourceProvider(provider);
         bootstrap.addBundle(hibernate);
     }
 

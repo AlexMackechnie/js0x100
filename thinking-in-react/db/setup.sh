@@ -17,20 +17,20 @@ sleep 1
 PGPASSWORD=${1} psql -U postgres -h localhost -p 5432 postgres << EOF
     create table products(
         product_name varchar(30),
-        product_category varchar(30),
+        category_name varchar(30),
         price decimal(10, 2),
         in_stock boolean default false
     );
 
-    insert into products (product_name, product_category, price, in_stock)
+    insert into products (product_name, category_name, price, in_stock)
     values 
-        ('tomato', 'vegetable', 0.80, true),
-        ('pepper', 'vegetable', 0.60, false),
-        ('mushroom', 'vegetable', 0.90, true),
-        ('rice', 'grain', 1.20, true),
-        ('pasta', 'grain', 1.40, false),
-        ('apple', 'fruit', 0.50, false),
-        ('banana', 'fruit', 0.70, true),
-        ('pear', 'fruit', 0.60, true)
+        ('Tomato', 'Vegetable', 0.80, true),
+        ('Pepper', 'Vegetable', 0.60, false),
+        ('Mushroom', 'Vegetable', 0.90, true),
+        ('Rice', 'Grain', 1.20, true),
+        ('Pasta', 'Grain', 1.40, false),
+        ('Apple', 'Fruit', 0.50, false),
+        ('Banana', 'Fruit', 0.70, true),
+        ('Pear', 'Fruit', 0.60, true)
         ;
 EOF

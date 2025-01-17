@@ -5,7 +5,7 @@ allowedOrigins:
 database:
     driverClass: org.postgresql.Driver
     user: postgres
-    password:
+    password: ${DB_PASS}
     url: jdbc:postgresql://localhost:5432/postgres
     properties:
       charSet: UTF-8
