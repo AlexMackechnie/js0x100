@@ -11,7 +11,7 @@ database:
       charSet: UTF-8
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
     maxWaitForConnection: 1s
-    validationQuery: "/* MyApplication Health Check */ SELECT 1"
+    validationQuery: "/* MyApplication Health Check */ select * from products limit 1"
     minSize: 8
     maxSize: 32
     checkConnectionWhileIdle: false
