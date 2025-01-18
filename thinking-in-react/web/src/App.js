@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 
 export default function App() {
     return (
-        <>
+        <div className="app" >
             <h2>Shop</h2>
             <FilterableProductTable />
-        </>
+        </div>
     );
 }
 
@@ -53,14 +53,16 @@ function FilterableProductTable() {
 
 function SearchBar({ filterText, inStockOnly, onFilterTextChange, onInStockOnlyChange }) {
     return (
-        <div>
-            <form>
+        <div className="searchBar">
+            <form className="searchForm">
                 <input 
                     type="text"
                     placeholder="search..."
                     value={filterText}
                     onChange={(e) => onFilterTextChange(e.target.value)}
                 />
+            </form>
+            <form className="inputForm">
                 <label>
                     <input 
                         type="checkbox"
@@ -92,15 +94,6 @@ function ProductTable({ products, filterText, inStockOnly }) {
             return;
         }
 
-        if (lastCategory !== product.category) {
-            rows.push(
-                <ProductCategoryRow
-                    category={product.category}
-                    key={product.category}
-                />
-            )
-            lastCategory = product.category;
-        };
         rows.push(
             <ProductRow
                 product={product}
@@ -110,11 +103,12 @@ function ProductTable({ products, filterText, inStockOnly }) {
     });
 
     return (
-        <div>
-            <table>
+        <div className="productTableContainer">
+            <table className="productTable">
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Category</th>
                         <th>Price</th>
                     </tr>
                 </thead>
@@ -129,7 +123,7 @@ function ProductTable({ products, filterText, inStockOnly }) {
 function ProductCategoryRow({ category }) {
     return (
         <tr>
-            <th colSpan="2">{category}</th>
+            <th colSpan="1">{category}</th>
         </tr>
     );
 }
@@ -143,6 +137,7 @@ function ProductRow({ product }) {
     return (
         <tr>
             <td>{name}</td>
+            <td>{product.category}</td>
             <td>£{product.price.toFixed(2)}</td>
         </tr>
     );

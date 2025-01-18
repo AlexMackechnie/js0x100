@@ -31,6 +31,9 @@ PGPASSWORD=${1} psql -U postgres -h localhost -p 5432 postgres << EOF
         ('Pasta', 'Grain', 1.40, false),
         ('Apple', 'Fruit', 0.50, false),
         ('Banana', 'Fruit', 0.70, true),
-        ('Pear', 'Fruit', 0.60, true)
+        ('Orange', 'Fruit', 0.40, true),
+        ('Pear', 'Fruit', 0.60, true),
+        ('Blueberry', 'Fruit', 1.80, true),
+        ('Raspberry', 'Fruit', 1.50, true)
         ;
 EOF
